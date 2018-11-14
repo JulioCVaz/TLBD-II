@@ -32,6 +32,13 @@ CREATE TABLE venda(
 	datavenda datetime default GETDATE()
 );
 
+ALTER TABLE venda ADD parcelas integer default 0;
+
+select * from venda;
+
+
+UPDATE venda SET tipo_venda = 1 WHERE id = 1;
+
  -- table cliente_has_produto
 CREATE TABLE cliente_has_venda(
 	id_cliente integer foreign key references cliente(id),
@@ -56,5 +63,11 @@ SELECT * FROM produtos;
 SELECT * FROM venda;
 
 SELECT * FROM cliente_has_venda;
---  
-SELECT cli.nome, cli.cpf , prod.desc_produto, prod.modelo, prod.valor FROM cliente as cli INNER JOIN cliente_has_venda as cv ON cli.id = cv.id_cliente INNER JOIN produtos as prod ON prod.id = 9; -- foi colocado o 9 por causa do erro no insert do produto
+
+SELECT * FROM venda;
+-- SELECT WITH INNER JOIN
+SELECT cli.nome, cli.cpf , prod.desc_produto, prod.modelo, prod.valor,
+CASE vn.tipo_venda WHEN 1 THEN 'A vísta' WHEN 2 THEN 'Parcelado' ELSE 'cancelado' END as 'tipo de compra', vn.qtd 
+FROM cliente as cli INNER JOIN cliente_has_venda as cv ON cli.id = cv.id_cliente
+INNER JOIN produtos as prod ON prod.id = 9
+INNER JOIN venda as vn ON vn.id = cv.id_venda;
